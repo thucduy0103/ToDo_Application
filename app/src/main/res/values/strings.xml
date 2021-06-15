@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Todos</string>
+    <string name="tvTitle">Tasks</string>
+    <string name="tvNewTask">New Task</string>
+    <string name="tvInputTask">Input Task</string>
+    <string name="btnAdd">SAVE</string>
+</resources>
