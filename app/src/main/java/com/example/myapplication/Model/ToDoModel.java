@@ -1,15 +1,22 @@
 package com.example.myapplication.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ToDoModel {
-    private int id;
+    @SerializedName("_id")
+    private String id;
+
+    @SerializedName("is_done")
     private boolean isDone;
+
+    @SerializedName("task")
     private String Task;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

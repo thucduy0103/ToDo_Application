@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -18,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.example.myapplication.API.ToDoClient;
+import com.example.myapplication.Adapter.ToDoAdapter;
 import com.example.myapplication.Model.ToDoModel;
 import com.example.myapplication.Utils.DatabaseHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -29,10 +32,18 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private EditText newTaskText;
     private Button newTaskSaveButton;
 
-    private DatabaseHandler db;
+//    private DatabaseHandler db;
+    private ToDoAdapter toDoAdapter;
 
-    public static AddNewTask newInstance(){
-        return new AddNewTask();
+    @SuppressLint("StaticFieldLeak")
+    private static AddNewTask instance;
+
+    private AddNewTask() {
+
+    }
+
+    public static AddNewTask getInstance() {
+        return instance == null ? instance = new AddNewTask() : instance;
     }
 
     @Override
@@ -70,8 +81,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 newTaskSaveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark));
         }
 
-        db = new DatabaseHandler(getActivity());
-        db.openDatabase();
+//        db = new DatabaseHandler(getActivity());
+//        db.openDatabase();
 
         newTaskText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -99,7 +110,11 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newTaskSaveButton.setOnClickListener(v -> {
             String text = newTaskText.getText().toString();
             if(finalIsUpdate){
-                db.updateTask(bundle.getInt("id"), text);
+//                db.updateTask(bundle.getInt("id"), text);
+                ToDoModel toDoModel = new ToDoModel();
+                toDoModel.setTask(text);
+                toDoModel.setId(bundle.getString("id"));
+                ToDoClient.getInstance().updateTask(this.getToDoAdapter(),toDoModel);
             }
             else {
                 if(text.trim().equals("")){
@@ -109,11 +124,20 @@ public class AddNewTask extends BottomSheetDialogFragment {
                     ToDoModel task = new ToDoModel();
                     task.setTask(text);
                     task.setDone(false);
-                    db.insertTask(task);
+//                    db.insertTask(task);
+                    ToDoClient.getInstance().createTask(this.toDoAdapter,task,0);
                 }
             }
             dismiss();
         });
+    }
+
+    public ToDoAdapter getToDoAdapter() {
+        return toDoAdapter;
+    }
+
+    public void setToDoAdapter(ToDoAdapter toDoAdapter) {
+        this.toDoAdapter = toDoAdapter;
     }
 
     @Override
